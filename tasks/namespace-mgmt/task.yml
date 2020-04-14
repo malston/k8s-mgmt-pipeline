@@ -8,6 +8,7 @@ image_resource:
     tag: 0.0.1
 
 inputs:
+  - name: config-repo
   - name: repo
 
 params:
