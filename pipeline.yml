@@ -1,0 +1,40 @@
+resources:
+- name: config-repo
+  type: git
+  source:
+    uri: ((config-repo.uri))
+    branch: master
+    private_key: ((config-repo.private_key))
+
+- name: k8s-mgmt-pipeline
+  type: git
+  source:
+    uri: ((k8s-mgmt-pipeline.uri))
+    branch: master
+    private_key: ((k8s-mgmt-pipeline.private_key))
+
+jobs:
+- name: namespace-management
+  # serial: true
+  # serial_groups: [management]
+  plan:
+  - get: config-repo
+    trigger: true
+  - get: k8s-mgmt-pipeline
+
+  - task: login
+    file: k8s-mgmt-pipeline/ci/tasks/pks-login/task.yml
+    params:
+      PKS_API_URL: ((pks_api_url))
+      PKS_USER: ((pks_user))
+      PKS_PASSWORD: ((pks_password))
+      CLUSTER_NAME: ((cluster_name))
+
+  - task: manage-namespace
+    file: k8s-mgmt-pipeline/ci/tasks/namespace-mgmt/task.yml
+    params:
+      PKS_PASSWORD: ((pks_password))
+      DELETE_FLAG: false
+
+
+

@@ -1,0 +1,13 @@
+config-repo:
+  uri: git@github.com:username/k8s-mgmt-config.git
+  branch: master
+  private_key: |
+
+k8s-mgmt-pipeline:
+  uri: git@github.com:username/k8s-mgmt-pipeline.git
+  branch: master
+  private_key: |
+
+pks_api_url: https://api.pks.example.com
+pks_user: admin
+pks_password: pks-password

@@ -1,0 +1,26 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: malston/pks-control-plane
+  #   repository: harbor.haas-420.pez.pivotal.io/library/malston/pks-control-plane
+  #   insecure_registries: [harbor.haas-420.pez.pivotal.io]
+    tag: 0.0.1
+
+inputs:
+  - name: repo
+
+outputs:
+- name: pks-config
+- name: kube-config
+
+params:
+  PKS_API_URL:
+  PKS_USER:
+  PKS_PASSWORD:
+  CLUSTER_NAME:
+
+run:
+  path: repo/ci/tasks/pks-login/task.sh
