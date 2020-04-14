@@ -17,4 +17,4 @@ params:
   DELETE_FLAG:
 
 run:
-  path: repo/ci/tasks/namespace-mgmt/task.sh
+  path: repo/tasks/namespace-mgmt/task.sh

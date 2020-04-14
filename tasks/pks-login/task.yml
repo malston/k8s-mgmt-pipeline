@@ -23,4 +23,4 @@ params:
   CLUSTER_NAME:
 
 run:
-  path: repo/ci/tasks/pks-login/task.sh
+  path: repo/tasks/pks-login/task.sh

@@ -23,7 +23,7 @@ jobs:
   - get: k8s-mgmt-pipeline
 
   - task: login
-    file: k8s-mgmt-pipeline/ci/tasks/pks-login/task.yml
+    file: k8s-mgmt-pipeline/tasks/pks-login/task.yml
     params:
       PKS_API_URL: ((pks_api_url))
       PKS_USER: ((pks_user))
@@ -31,7 +31,7 @@ jobs:
       CLUSTER_NAME: ((cluster_name))
 
   - task: manage-namespace
-    file: k8s-mgmt-pipeline/ci/tasks/namespace-mgmt/task.yml
+    file: k8s-mgmt-pipeline/tasks/namespace-mgmt/task.yml
     params:
       PKS_PASSWORD: ((pks_password))
       DELETE_FLAG: false
