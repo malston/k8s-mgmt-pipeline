@@ -11,7 +11,7 @@ function login_pks_k8s_cluster() {
 	login_pks
 
 	printf "Logging into k8s cluster (%s)..." "${CLUSTER_NAME}"
-	pks get-credentials "${CLUSTER_NAME}"
+	echo "${PKS_PASSWORD}" | pks get-credentials "${CLUSTER_NAME}" > /dev/null 2>&1
 
 	return 0
 }
