@@ -15,8 +15,8 @@ resources:
 
 jobs:
 - name: cluster-management
-  # serial: true
-  # serial_groups: [management]
+  serial: true
+  serial_groups: [management]
   plan:
   - get: config-repo
     trigger: true
@@ -38,8 +38,8 @@ jobs:
       DELETE_FLAG: true
 
 - name: namespace-management
-  # serial: true
-  # serial_groups: [management]
+  serial: true
+  serial_groups: [management]
   plan:
   - get: config-repo
     passed: [cluster-management]
@@ -61,8 +61,8 @@ jobs:
       DELETE_FLAG: false
 
 - name: role-management
-  # serial: true
-  # serial_groups: [management]
+  serial: true
+  serial_groups: [management]
   plan:
   - get: config-repo
     passed: [namespace-management]
