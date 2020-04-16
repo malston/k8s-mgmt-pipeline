@@ -14,12 +14,35 @@ resources:
     private_key: ((k8s-mgmt-pipeline.private_key))
 
 jobs:
-- name: namespace-management
+- name: cluster-management
   # serial: true
   # serial_groups: [management]
   plan:
   - get: config-repo
     trigger: true
+  - get: repo
+    resource: k8s-mgmt-pipeline
+
+  - task: login
+    file: repo/tasks/pks-login/task.yml
+    params:
+      PKS_API_URL: ((pks_api_url))
+      PKS_USER: ((pks_user))
+      PKS_PASSWORD: ((pks_password))
+      CLUSTER_NAME: ((cluster_name))
+
+  - task: manage-cluster
+    file: repo/tasks/cluster-mgmt/task.yml
+    params:
+      PKS_PASSWORD: ((pks_password))
+      DELETE_FLAG: true
+
+- name: namespace-management
+  # serial: true
+  # serial_groups: [management]
+  plan:
+  - get: config-repo
+    passed: [cluster-management]
   - get: repo
     resource: k8s-mgmt-pipeline
 
@@ -37,5 +60,25 @@ jobs:
       PKS_PASSWORD: ((pks_password))
       DELETE_FLAG: false
 
+- name: role-management
+  # serial: true
+  # serial_groups: [management]
+  plan:
+  - get: config-repo
+    passed: [namespace-management]
+  - get: repo
+    resource: k8s-mgmt-pipeline
 
+  - task: login
+    file: repo/tasks/pks-login/task.yml
+    params:
+      PKS_API_URL: ((pks_api_url))
+      PKS_USER: ((pks_user))
+      PKS_PASSWORD: ((pks_password))
+      CLUSTER_NAME: ((cluster_name))
+
+  - task: manage-namespace
+    file: repo/tasks/role-mgmt/task.yml
+    params:
+      PKS_PASSWORD: ((pks_password))
 

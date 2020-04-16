@@ -1,0 +1,23 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: malston/pks-control-plane
+    tag: 0.0.1
+
+inputs:
+  - name: config-repo
+  - name: repo
+  - name: pks-config
+  - name: kube-config
+
+params:
+  PKS_API_URL:
+  PKS_USERNAME:
+  PKS_PASSWORD:
+  DELETE_FLAG:
+
+run:
+  path: repo/tasks/cluster-mgmt/task.sh
