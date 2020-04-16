@@ -127,7 +127,7 @@ function main() {
 		##
 		if [[ ! -d "${cluster}"  ]]; then
 			echo "Deleting cluster ${cluster}..."
-			pks delete-cluster "${cluster}"
+			pks delete-cluster "${cluster}" --non-interactive
 			echo ""
 		fi
 	done
