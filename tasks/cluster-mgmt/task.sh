@@ -80,7 +80,7 @@ function main() {
             args+=("--network-profile ${network_profile}")
         fi
 
-        pks create-cluster "${cluster}" "${args[@]}"
+        pks create-cluster "${cluster}" ${args[@]}
         echo ""
         echo "Waiting for cluster '$cluster' with -external-hostname '$external_hostname' to be created"
         success=false
