@@ -43,18 +43,9 @@ function main() {
     ## Drop down into cluster directory
     ##
     cd "$d"
-
-    ## 
-    ## Start by applying the ClusterRole, if it exists
-    ##
-    if [[ -f cluster-role.yml ]]; then
-      echo "Apply cluster role on cluster ${cluster}..."
-      kubectl apply -f cluster-role.yml
-      echo
-    fi
     
     ##
-    ## Use find to get the list of directories - wheere each directory is to be a namespace inside
+    ## Use find to get the list of directories - where each directory is to be a namespace inside
     ## this cluster
     ##
     for config_namespace in $(find . -mindepth 1 -maxdepth 1 -not -path '*/\.*' -type d | cut -d"/" -f2); do
