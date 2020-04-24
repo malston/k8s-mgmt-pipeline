@@ -77,7 +77,7 @@ jobs:
       PKS_PASSWORD: ((pks_password))
       CLUSTER_NAME: ((cluster_name))
 
-  - task: manage-namespace
+  - task: manage-role
     file: repo/tasks/role-mgmt/task.yml
     params:
       PKS_PASSWORD: ((pks_password))

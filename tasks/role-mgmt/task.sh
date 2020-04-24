@@ -48,7 +48,7 @@ function main() {
     ## Start by applying the ClusterRole, if it exists
     ##
     if [[ -f clusterrole.yml ]]; then
-      echo "Apply clusterRole on cluster ${cluster}..."
+      echo "Apply cluster role on cluster ${cluster}..."
       kubectl apply -f clusterrole.yml
       echo
     fi
