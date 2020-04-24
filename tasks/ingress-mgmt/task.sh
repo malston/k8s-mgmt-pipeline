@@ -15,8 +15,6 @@ function login_pks_k8s_cluster() {
 }
 
 function main() {
-  local password="${1}"
-  local delete_flag="${2:-false}"
 
   ##
   ## "config-repo" is the foundation-specific configuration repo; each directory in there is
@@ -24,9 +22,8 @@ function main() {
   ##
   for d in ./config-repo/*; do
     cluster=${d#"./config-repo/"}
-
     ##
-    ## Text files cannot be cluster... so let's skip those
+    ## Text files cannot be clusters... so let's skip those
     ##
     if [[ ! -d "$d" ]]; then
       continue
@@ -47,80 +44,39 @@ function main() {
     ##
     cd "$d"
 
-    ## This first loop is the "create" section
-
+    ## 
+    ## Start by applying the ClusterRole, if it exists
     ##
-    ## Stash the list of live namespaces into an array for referencing later
+    if [[ -f cluster-role.yml ]]; then
+      echo "Apply cluster role on cluster ${cluster}..."
+      kubectl apply -f cluster-role.yml
+      echo
+    fi
+    
     ##
-    k8s_namespaces=( "$(kubectl get namespaces -o json | jq -r '.items[].metadata.name')" )
-
-    ##
-    ## Use find to get the list of directories - where each directory is to be a namespace inside
+    ## Use find to get the list of directories - wheere each directory is to be a namespace inside
     ## this cluster
     ##
     for config_namespace in $(find . -mindepth 1 -maxdepth 1 -not -path '*/\.*' -type d | cut -d"/" -f2); do
-
+      
       ##
-      ## Get the list of namespaces in this cluster and then check to ensure there is a matching
-      ## directory. If the directory exists AND the namespace is already there, echo a helpful
-      ## message and continue on
+      ## Now apply the things...
       ##
-      if [[ "${k8s_namespaces[*]} " =~ ${config_namespace} ]]; then
-        echo "${config_namespace} already exists. skipping creation"
-        echo ""
-      fi
-    
-      ##
-      ## Conversely, if the namespace wasn't found, it gets created here
-      ##
-      if [[ ! "${k8s_namespaces[*]} " =~ ${config_namespace} ]]; then
-        echo "creating namespace ${config_namespace}"
-        kubectl create ns "${config_namespace}"
-        kubectl label ns "${config_namespace}" "name=${config_namespace}"
-        echo ""
+      ingress_list=( "${config_namespace}"/*ingress*.yml )
+      if [ ${#ingress_list[@]} -eq 0 ]; then
+        echo "${config_namespace} has no ingress rules defined"
+      else
+        for ingress in "${ingress_list[@]}"; do
+          echo -n "Applying ${ingress} ingress rules to ${config_namespace}"
+          kubectl apply -f "${ingress}" -n "${config_namespace}"
+        done
       fi
     done
-
-    ##
-    ## Don't delete namespaces unless explicitly specified
-    ##
-    if [[ $delete_flag = false ]]; then
-      continue
-    fi
-
-    ##
-    ## This second loop is the "delete" section
-    ##
-    for ns in ${k8s_namespaces[*]}; do
-
-      ##
-      ## The protected-ns.yml file contains namespaces which are required to be in existence, so make sure
-      ## not to delete those
-      ##
-      protected=$(bosh int ../protected-ns.yml --path /protected_ns | grep "${ns}" | cut -d' ' -f2) || echo ""
-
-      if [[ ${protected} == "${ns}"  ]]; then
-        echo "${ns} is a protected namespace. skipping delete"
-        continue
-        echo ""
-      fi
-
-      ##
-      ## Otherwise, remove the namespace (which will automatically remove any namespace-scoe resources,
-      ## e.g.: pods, deployments, virtualservices, etc.)
-      ##
-      if [[ ! -d ${ns}  ]]; then
-        echo "Deleting namespace ${ns} from cluster ${cluster}..."
-        kubectl delete ns "${ns}"
-        echo ""
-      fi
-    done
-    cd - > /dev/null 2>&1
+    echo
   done
 }
 
 password="${1:-$PKS_PASSWORD}"
-delete_flag="${2:-$DELETE_FLAG}"
 
 if [[ -z "${password}" ]]; then
   echo "PKS admin password is required"
@@ -134,4 +90,4 @@ mkdir -p ~/.kube
 cp kube-config/config ~/.kube/config
 
 
-main "$password" "$delete_flag"
+main "$password"
