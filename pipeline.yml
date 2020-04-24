@@ -16,7 +16,7 @@ resources:
 jobs:
 - name: cluster-management
   serial: true
-  serial_groups: [management]
+  serial_groups: [k8s-mgmt]
   plan:
   - get: config-repo
     trigger: true
@@ -39,7 +39,7 @@ jobs:
 
 - name: namespace-management
   serial: true
-  serial_groups: [management]
+  serial_groups: [k8s-mgmt]
   plan:
   - get: config-repo
     passed: [cluster-management]
@@ -62,7 +62,7 @@ jobs:
 
 - name: role-management
   serial: true
-  serial_groups: [management]
+  serial_groups: [k8s-mgmt]
   plan:
   - get: config-repo
     passed: [namespace-management]
