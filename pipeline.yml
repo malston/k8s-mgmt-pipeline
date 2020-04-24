@@ -19,7 +19,7 @@ jobs:
   serial_groups: [k8s-mgmt]
   plan:
   - get: config-repo
-    trigger: true
+    # trigger: true
   - get: repo
     resource: k8s-mgmt-pipeline
 
@@ -99,7 +99,7 @@ jobs:
       PKS_PASSWORD: ((pks_password))
       CLUSTER_NAME: ((cluster_name))
 
-  - task: manage-role
-    file: repo/tasks/role-mgmt/task.yml
+  - task: manage-ingress
+    file: repo/tasks/ingress-mgmt/task.yml
     params:
       PKS_PASSWORD: ((pks_password))
