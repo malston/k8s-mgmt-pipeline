@@ -103,3 +103,25 @@ jobs:
     file: repo/tasks/ingress-mgmt/task.yml
     params:
       PKS_PASSWORD: ((pks_password))
+
+- name: limit-and-quota-management
+  serial: true
+  serial_groups: [k8s-mgmt]
+  plan:
+  - get: config-repo
+    passed: [namespace-management]
+  - get: repo
+    resource: k8s-mgmt-pipeline
+
+  - task: login
+    file: repo/tasks/pks-login/task.yml
+    params:
+      PKS_API_URL: ((pks_api_url))
+      PKS_USER: ((pks_user))
+      PKS_PASSWORD: ((pks_password))
+      CLUSTER_NAME: ((cluster_name))
+
+  - task: manage-limits-and-quota
+    file: repo/tasks/quota-mgmt/task.yml
+    params:
+      PKS_PASSWORD: ((pks_password))
