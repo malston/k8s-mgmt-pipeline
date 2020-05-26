@@ -16,10 +16,10 @@ resources:
 jobs:
 - name: cluster-management
   serial: true
-  serial_groups: [k8s-mgmt]
+  serial_groups: [management]
   plan:
   - get: config-repo
-    # trigger: true
+    trigger: true
   - get: repo
     resource: k8s-mgmt-pipeline
 
@@ -39,10 +39,11 @@ jobs:
 
 - name: namespace-management
   serial: true
-  serial_groups: [k8s-mgmt]
+  serial_groups: [management]
   plan:
   - get: config-repo
     passed: [cluster-management]
+    trigger: true
   - get: repo
     resource: k8s-mgmt-pipeline
 
@@ -62,10 +63,11 @@ jobs:
 
 - name: role-management
   serial: true
-  serial_groups: [k8s-mgmt]
+  serial_groups: [management]
   plan:
   - get: config-repo
     passed: [namespace-management]
+    trigger: true
   - get: repo
     resource: k8s-mgmt-pipeline
 
@@ -77,51 +79,8 @@ jobs:
       PKS_PASSWORD: ((pks_password))
       CLUSTER_NAME: ((cluster_name))
 
-  - task: manage-role
+  - task: manage-roles
     file: repo/tasks/role-mgmt/task.yml
     params:
       PKS_PASSWORD: ((pks_password))
 
-- name: ingress-management
-  serial: true
-  serial_groups: [k8s-mgmt]
-  plan:
-  - get: config-repo
-    passed: [namespace-management]
-  - get: repo
-    resource: k8s-mgmt-pipeline
-
-  - task: login
-    file: repo/tasks/pks-login/task.yml
-    params:
-      PKS_API_URL: ((pks_api_url))
-      PKS_USER: ((pks_user))
-      PKS_PASSWORD: ((pks_password))
-      CLUSTER_NAME: ((cluster_name))
-
-  - task: manage-ingress
-    file: repo/tasks/ingress-mgmt/task.yml
-    params:
-      PKS_PASSWORD: ((pks_password))
-
-- name: limit-and-quota-management
-  serial: true
-  serial_groups: [k8s-mgmt]
-  plan:
-  - get: config-repo
-    passed: [namespace-management]
-  - get: repo
-    resource: k8s-mgmt-pipeline
-
-  - task: login
-    file: repo/tasks/pks-login/task.yml
-    params:
-      PKS_API_URL: ((pks_api_url))
-      PKS_USER: ((pks_user))
-      PKS_PASSWORD: ((pks_password))
-      CLUSTER_NAME: ((cluster_name))
-
-  - task: manage-limits-and-quota
-    file: repo/tasks/quota-mgmt/task.yml
-    params:
-      PKS_PASSWORD: ((pks_password))

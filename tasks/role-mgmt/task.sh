@@ -45,14 +45,20 @@ function main() {
     cd "$d"
 
     ## 
-    ## Start by applying the ClusterRole, if it exists
+    ## Start by applying the ClusterRole and ClusterRoleBinding, if it exists
     ##
-    if [[ -f cluster-role.yml ]]; then
-      echo "Apply cluster role on cluster ${cluster}..."
-      kubectl apply -f cluster-role.yml
+    if [[ -f clusterrole.yml ]]; then
+      echo "Apply ClusterRole on cluster ${cluster}..."
+      kubectl apply -f clusterrole.yml
       echo
     fi
     
+    if [[ -f cluster-rolebinding.yml ]]; then
+      echo "Apply ClusterRoleBinding on cluster ${cluster}..."
+      kubectl apply -f cluster-rolebinding.yml
+      echo
+    fi
+
     ##
     ## Use find to get the list of directories - wheere each directory is to be a namespace inside
     ## this cluster
@@ -62,17 +68,17 @@ function main() {
       ## Now apply the things...
       ##
       if [[ -f ${config_namespace}/role.yml ]]; then
-        echo "Apply namespace role.yml on namespace ${config_namespace}..."
+        echo "Apply Role in namespace ${config_namespace}..."
         kubectl apply -f "${config_namespace}/role.yml" -n "${config_namespace}"
       fi
 
       if [[ -f ${config_namespace}/rolebinding.yml ]]; then
-        echo "Apply namespace rolebinding.yml on namespace ${config_namespace}..."
+        echo "Apply RoleBinding to roles in namespace ${config_namespace}..."
         kubectl apply -f "${config_namespace}/rolebinding.yml" -n "${config_namespace}"
       fi
 
       if [[ -f ${config_namespace}/cluster-rolebinding.yml ]]; then
-        echo "Apply namespace cluster-rolebinding.yml on namespace ${config_namespace}..."
+        echo "Apply ClusterRoleBinding in namespace ${config_namespace}..."
         kubectl apply -f "${config_namespace}/cluster-rolebinding.yml" -n "${config_namespace}"
       fi
     done
@@ -92,6 +98,5 @@ cp pks-config/creds.yml ~/.pks/creds.yml
 
 mkdir -p ~/.kube
 cp kube-config/config ~/.kube/config
-
 
 main "$password"
