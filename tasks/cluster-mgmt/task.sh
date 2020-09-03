@@ -4,20 +4,9 @@ set -e
 # only exit with zero if all commands of the pipeline exit successfully
 set -o pipefail
 
-function login_pks_k8s_cluster() {
-    local pks_password="${1}"
-    local pks_cluster="${2}"
-
-    printf "Logging into k8s cluster (%s)..." "${pks_cluster}"
-    echo "${pks_password}" | pks get-credentials "${pks_cluster}" > /dev/null 2>&1
-
-    return $?
-}
-
 function main() {
     local rootdir="${1}"
-    local pks_password="${2}"
-    local delete_flag="${3:-false}"
+    local delete_flag="${2:-false}"
     clusters=(./config-repo/*)
 
 	##
@@ -39,9 +28,9 @@ function main() {
         ##
         ## Set the directory name to be the cluster we need to login to, and do the login
         ##
-        if login_pks_k8s_cluster "${pks_password}" "${cluster}"; then
+        if cluster_exists "${cluster}"; then
             echo
-            echo "cluster already exist"
+            printf "cluster '%s' already exists" "${cluster}"
             continue
         fi
         echo
@@ -134,19 +123,16 @@ function main() {
 
 }
 
-pks_password="${1:-$PKS_PASSWORD}"
-delete_flag="${2:-$DELETE_FLAG}"
-rootdir=$PWD
+__DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-if [[ -z "${pks_password}" ]]; then
-    echo "PKS password is required"
-    exit 1
-fi
+# shellcheck source=/dev/null
+[[ -f "${__DIR}/../../scripts/helpers.sh" ]] && source "${__DIR}/../../scripts/helpers.sh" ||  \
+    echo "No helpers.sh found"
 
 mkdir -p ~/.pks
 cp pks-config/creds.yml ~/.pks/creds.yml
 
-mkdir -p ~/.kube
-cp kube-config/config ~/.kube/config
+delete_flag="${1:-$DELETE_FLAG}"
+rootdir=$PWD
 
-main "$rootdir" "$pks_password" "$delete_flag"
+main "$rootdir" "$delete_flag"

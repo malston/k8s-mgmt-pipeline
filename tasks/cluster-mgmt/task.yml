@@ -10,13 +10,9 @@ image_resource:
 inputs:
   - name: config-repo
   - name: repo
-  - name: kube-config
   - name: pks-config
 
 params:
-  PKS_API_URL:
-  PKS_USERNAME:
-  PKS_PASSWORD:
   DELETE_FLAG:
 
 run:

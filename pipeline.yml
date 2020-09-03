@@ -34,7 +34,6 @@ jobs:
   - task: manage-cluster
     file: repo/tasks/cluster-mgmt/task.yml
     params:
-      PKS_PASSWORD: ((pks_password))
       DELETE_FLAG: true
 
 - name: namespace-management

@@ -13,7 +13,7 @@ function login_pks_k8s_cluster() {
     local namespace="${6}"
     local ca_cert="${7}"
 
-    cmd="./repo/scripts/login-k8s.sh --api=${api} --cluster=${cluster} --domain=${cluster_domain} --user=${user} --password=\"${password}\""
+    cmd="./login-k8s.sh --api=${api} --cluster=${cluster} --domain=${cluster_domain} --user=${user} --password=\"${password}\""
 
     if [[ -n ${namespace} ]]; then
         cmd+=" --namespace ${namespace}"
