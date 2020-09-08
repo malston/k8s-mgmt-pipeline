@@ -29,7 +29,6 @@ jobs:
       PKS_API_URL: ((pks_api_url))
       PKS_USER: ((pks_user))
       PKS_PASSWORD: ((pks_password))
-      CLUSTER_NAME: ((cluster_name))
 
   - task: manage-cluster
     file: repo/tasks/cluster-mgmt/task.yml
