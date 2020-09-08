@@ -12,13 +12,11 @@ inputs:
 
 outputs:
 - name: pks-config
-- name: kube-config
 
 params:
   PKS_API_URL:
   PKS_USER:
   PKS_PASSWORD:
-  CLUSTER_NAME:
 
 run:
   path: repo/tasks/pks-login/task.sh

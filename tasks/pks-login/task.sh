@@ -7,23 +7,10 @@ function login_pks() {
 	)
 }
 
-function login_pks_k8s_cluster() {
-	login_pks
-
-	printf "Logging into k8s cluster (%s)..." "${CLUSTER_NAME}"
-	echo "${PKS_PASSWORD}" | pks get-credentials "${CLUSTER_NAME}" > /dev/null 2>&1
-
-	return 0
-}
-
 set -e
 # only exit with zero if all commands of the pipeline exit successfully
 set -o pipefail
 
-login_pks_k8s_cluster || exit 1
-
-if [[ -d ~/.kube ]]; then
-	cp ~/.kube/config kube-config/config
-fi
+login_pks || exit 1
 
 cp ~/.pks/creds.yml pks-config/creds.yml
