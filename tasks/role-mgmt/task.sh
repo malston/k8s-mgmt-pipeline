@@ -96,7 +96,4 @@ fi
 mkdir -p ~/.pks
 cp pks-config/creds.yml ~/.pks/creds.yml
 
-mkdir -p ~/.kube
-cp kube-config/config ~/.kube/config
-
 main "$password"
