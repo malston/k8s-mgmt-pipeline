@@ -22,6 +22,8 @@ set -o pipefail
 
 login_pks_k8s_cluster || exit 1
 
-cp ~/.kube/config kube-config/config
+if [[ -d ~/.kube ]]; then
+	cp ~/.kube/config kube-config/config
+fi
 
 cp ~/.pks/creds.yml pks-config/creds.yml
