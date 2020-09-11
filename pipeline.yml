@@ -41,6 +41,7 @@ jobs:
   serial_groups: [management]
   plan:
   - get: config-repo
+    passed: [profile-management]
     trigger: true
   - get: repo
     resource: k8s-mgmt-pipeline

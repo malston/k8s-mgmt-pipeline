@@ -32,7 +32,7 @@ function main() {
         for kubernetes_profile in ${kubernetes_profiles[@]}; do
             echo "Creating kubernetes profile: '${kubernetes_profile}'"
 	        cat "$PWD/${kubernetes_profile}"
-            # pks create-kubernetes-profile "${kubernetes_profile}"
+            pks create-kubernetes-profile "$PWD/${kubernetes_profile}"
         done
     done
 }

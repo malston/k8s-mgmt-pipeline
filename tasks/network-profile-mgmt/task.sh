@@ -32,7 +32,7 @@ function main() {
         for network_profile in ${network_profiles[@]}; do
             echo "Creating network profile: '${network_profile}'"
 	        cat "$PWD/${network_profile}"
-            # pks create-network-profile "${network_profile}"
+            pks create-network-profile "$PWD/${network_profile}"
         done
     done
 }
