@@ -36,7 +36,7 @@ jobs:
   - task: manage-kubernetes-profiles
     file: repo/tasks/kubernetes-profile-mgmt/task.yml
 
-  - name: cluster-management
+- name: cluster-management
   serial: true
   serial_groups: [management]
   plan:

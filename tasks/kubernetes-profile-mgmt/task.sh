@@ -11,24 +11,12 @@ function main() {
 
 	## This first loop is the "create" section
     for d in "${clusters[@]}"; do
-        cluster=${d#"./config-repo/"}
-
         ##
         ## Text files cannot be cluster... so let's skip those
         ##
         if [[ ! -d "$d" ]]; then
             continue
         fi
-
-        ##
-        ## Set the directory name to be the cluster we need to login to, and do the login
-        ##
-        if cluster_exists "${cluster}"; then
-            echo
-            printf "cluster '%s' already exists" "${cluster}"
-            continue
-        fi
-        echo
 
         ##
         ## Drop down into cluster directory
