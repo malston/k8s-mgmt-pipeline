@@ -5,8 +5,6 @@ set -e
 set -o pipefail
 
 function main() {
-    local rootdir="${1}"
-    local delete_flag="${2:-false}"
     clusters=(./config-repo/*)
 
 	## This first loop is the "create" section
@@ -42,7 +40,4 @@ __DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 mkdir -p ~/.pks
 cp pks-config/creds.yml ~/.pks/creds.yml
 
-delete_flag="${1:-$DELETE_FLAG}"
-rootdir=$PWD
-
-main "$rootdir" "$delete_flag"
+main
