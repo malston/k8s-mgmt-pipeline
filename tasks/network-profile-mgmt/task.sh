@@ -21,7 +21,13 @@ function main() {
         ##
         cd "$d"
 
-        ## Create network profile
+        ## Check if there are any network profiles
+        if [[ ! $(om interpolate --config ./cluster-info.yml --path /network-profiles > /dev/null 2>&1) ]]; then
+            printf "No network profiles exist for cluster %s" "$d"
+            continue
+        fi
+
+        ## Create network profiles
         network_profiles=$(om interpolate --config ./cluster-info.yml --path /network-profiles 2>/dev/null | grep file | awk '{print $NF}')
         for network_profile in "${network_profiles[@]}"; do
             echo "Creating network profile"
