@@ -22,7 +22,7 @@ function main() {
         cd "$d"
 
         ## Check if there are any network profiles
-        if [[ ! $(om interpolate --config ./cluster-info.yml --path /network-profiles > /dev/null 2>&1) ]]; then
+        if [[ ! $(om interpolate --config ./cluster-info.yml --path /network-profiles 2>/dev/null | grep file | awk '{print $NF}') ]]; then
             printf "No network profiles exist for cluster %s" "$d"
             continue
         fi
