@@ -13,25 +13,25 @@ ARG pivnet_token
 ENV PIVNET_TOKEN $pivnet_token
 
 ARG pks_version
-ENV PKS_VERSION ${pks_version:-1.6.1}
+ENV PKS_VERSION ${pks_version:-1.8.1}
 
 ARG pivnet_version
-ENV PIVNET_VERSION ${pivnet_version:-1.0.1}
+ENV PIVNET_VERSION ${pivnet_version:-2.0.0}
 
 ARG jq_version
 ENV JQ_VERSION ${jq_version:-1.6}
 
 ARG credhub_version
-ENV CREDHUB_VERSION ${credhub_version:-2.6.2}
+ENV CREDHUB_VERSION ${credhub_version:-2.7.0}
 
 ARG bosh_version
 ENV BOSH_VERSION ${bosh_version:-6.2.1}
 
 ARG om_version
-ENV OM_VERSION ${om_version:-4.4.2}
+ENV OM_VERSION ${om_version:-4.6.0}
 
 ARG helm_version
-ENV HELM_VERSION ${helm_version:-3.1.0-rc.3}
+ENV HELM_VERSION ${helm_version:-3.1.2}
 
 ARG opsman_ssh_key
 

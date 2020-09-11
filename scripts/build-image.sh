@@ -10,7 +10,7 @@ pivnet_token="${1:?"Must supply pivnet token"}"
 opsman_ssh_key="${2:?"Must supply path to opsman private ssh key"}"
 
 docker_image_name="malston/k8s-mgmt"
-docker_image_tag="0.0.1"
+docker_image_tag="0.0.2"
 
 docker build --build-arg pivnet_token="${pivnet_token}" --build-arg opsman_ssh_key="$(cat "${opsman_ssh_key}")" -t "${docker_image_name}:${docker_image_tag}" .
 
