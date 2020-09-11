@@ -29,9 +29,9 @@ function main() {
 
         ## Create network profiles
         network_profiles=( "$(om interpolate --config ./cluster-info.yml --path /network-profiles 2>/dev/null | grep file | awk '{print $NF}')" )
-        for network_profile in "${network_profiles[@]}"; do
-            echo "Creating network profile"
-            cat "${network_profile}"
+        for network_profile in ${network_profiles[@]}; do
+            echo "Creating network profile: '${network_profile}'"
+	        cat "$PWD/${network_profile}"
             # pks create-network-profile "${network_profile}"
         done
     done
