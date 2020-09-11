@@ -22,10 +22,10 @@ function main() {
         cd "$d"
 
         ## Check if there are any kubernetes profiles
-        # if [[ ! $(om interpolate --config ./cluster-info.yml --path /kubernetes-profiles > /dev/null 2>&1) ]]; then
-        #     printf "No kubernetes profiles exist for cluster %s" "$d"
-        #     continue
-        # fi
+        if [[ ! $(om interpolate --config ./cluster-info.yml --path /kubernetes-profiles 2>/dev/null | grep file | awk '{print $NF}') ]]; then
+            printf "No kubernetes profiles exist for cluster %s" "$d"
+            continue
+        fi
 
         ## Create kubernetes profiles
         kubernetes_profiles=( "$(om interpolate --config ./cluster-info.yml --path /kubernetes-profiles 2>/dev/null | grep file | awk '{print $NF}')" )
