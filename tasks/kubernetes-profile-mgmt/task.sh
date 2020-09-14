@@ -30,9 +30,13 @@ function main() {
         ## Create kubernetes profiles
         kubernetes_profiles=( "$(om interpolate --config ./cluster-info.yml --path /kubernetes-profiles 2>/dev/null | grep file | awk '{print $NF}')" )
         for kubernetes_profile in ${kubernetes_profiles[@]}; do
-            echo "Creating kubernetes profile: '${kubernetes_profile}'"
-	        cat "$PWD/${kubernetes_profile}"
-            pks create-kubernetes-profile "$PWD/${kubernetes_profile}"
+            if [[ ! $(pks kubernetes-profile "$(om interpolate --config "$PWD/${kubernetes_profile}" --path /name)") ]]; then
+                echo "Creating kubernetes profile: '${kubernetes_profile}'"
+                cat "$PWD/${kubernetes_profile}"
+                pks create-kubernetes-profile "$PWD/${kubernetes_profile}"
+            else
+                echo "Kubernetes profile: '${kubernetes_profile}' already exists"
+            fi
         done
     done
 }
