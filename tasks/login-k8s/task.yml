@@ -1,0 +1,19 @@
+---
+platform: linux
+
+inputs:
+  - name: repo
+
+outputs:
+- name: kube-config
+
+run:
+  path: repo/tasks/login-k8s/task.sh
+
+params:
+  PKS_API:
+  PKS_USER:
+  PKS_PASSWORD:
+  CLUSTER:
+  NAMESPACE:
+  CLUSTER_CERT:

@@ -1,0 +1,99 @@
+registry-params: &registry-params
+  username: ((harbor_registry.username))
+  password: ((harbor_registry.password))
+
+resources:
+- name: config-repo
+  type: git
+  source:
+    uri: ((git.configuration.config_uri))
+    branch: ((git.configuration.config_branch))
+
+- name: k8s-mgmt-pipeline
+  type: git
+  source:
+    uri: ((git.configuration.uri))
+    branch: ((git.configuration.branch))
+
+- name: pks-image
+  type: registry-image
+  source:
+    repository: ((registry_uri))/library/bespin-mgmt
+    tag: ((pks-image.tag))
+    <<: *registry-params
+  version:
+    digest: ((pks-image.version))
+
+jobs:
+- name: cluster-management
+  serial: true
+  serial_groups: [management]
+  plan:
+  - in_parallel:
+    - get: pks-image
+    - get: config-repo
+      trigger: true
+    - get: repo
+      resource: k8s-mgmt-pipeline
+
+  - task: login-pks
+    file: repo/tasks/login-pks/task.yml
+    image: pks-image
+    params:
+      PKS_API_URL: https://((pks.api_hostname))
+      PKS_USER: ((pks.username))
+      PKS_PASSWORD: ((pks.password))
+      CLUSTER: ((pks.cluster_name))
+
+  - task: manage-cluster
+    file: repo/tasks/cluster-mgmt/task.yml
+    image: pks-image
+    params:
+      DELETE_FLAG: false
+
+- name: namespace-management
+  serial: true
+  serial_groups: [management]
+  plan:
+  - in_parallel:
+    - get: pks-image
+    - get: config-repo
+      passed: [cluster-management]
+      trigger: true
+    - get: repo
+      resource: k8s-mgmt-pipeline
+
+  - task: manage-namespace
+    file: repo/tasks/namespace-mgmt/task.yml
+    image: pks-image
+    params:
+      PKS_API: ((pks.api_hostname))
+      PKS_USER: ((pks.username))
+      PKS_PASSWORD: ((pks.password))
+      CLUSTER: ((pks.cluster_name))
+      CLUSTER_DOMAIN: ((pks.cluster_domain))
+      DELETE_FLAG: false
+      UAA_PORT: ((pks.uaa_port))
+
+- name: role-management
+  serial: true
+  serial_groups: [management]
+  plan:
+  - in_parallel:
+    - get: pks-image
+    - get: config-repo
+      passed: [namespace-management]
+      trigger: true
+    - get: repo
+      resource: k8s-mgmt-pipeline
+
+  - task: manage-roles
+    file: repo/tasks/role-mgmt/task.yml
+    image: pks-image
+    params:
+      PKS_API: ((pks.api_hostname))
+      PKS_USER: ((pks.username))
+      PKS_PASSWORD: ((pks.password))
+      CLUSTER: ((pks.cluster_name))
+      CLUSTER_DOMAIN: ((pks.cluster_domain))
+      UAA_PORT: ((pks.uaa_port))

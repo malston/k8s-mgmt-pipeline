@@ -1,0 +1,25 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: malston/k8s-mgmt
+    tag: 0.0.2
+
+inputs:
+  - name: config-repo
+  - name: repo
+
+params:
+  PKS_API:
+  PKS_USER:
+  PKS_PASSWORD:
+  CLUSTER:
+  CLUSTER_DOMAIN:
+  NAMESPACE:
+  CLUSTER_CERT:
+  DELETE_FLAG:
+
+run:
+  path: repo/tasks/namespace-mgmt/task.sh
