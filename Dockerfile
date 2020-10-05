@@ -33,6 +33,9 @@ ENV OM_VERSION ${om_version:-4.6.0}
 ARG helm_version
 ENV HELM_VERSION ${helm_version:-3.1.2}
 
+ARG fly_version
+ENV FLY_VERSION ${fly_version:-6.3.0}
+
 ARG opsman_ssh_key
 
 WORKDIR /tmp
@@ -62,6 +65,9 @@ RUN mv om-linux-${OM_VERSION} om && chmod +x om && mv om /usr/bin/om
 
 ADD https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz .
 RUN tar -xvf helm-v${HELM_VERSION}-linux-amd64.tar.gz --strip=1 -C /tmp && rm helm-v${HELM_VERSION}-linux-amd64.tar.gz && chmod +x /tmp/helm && mv /tmp/helm /usr/bin/helm
+
+ADD https://github.com/concourse/concourse/releases/download/v${FLY_VERSION}/fly-${FLY_VERSION}-linux-amd64.tgz .
+RUN tar -xvf fly-${FLY_VERSION}-linux-amd64.tgz && rm fly-${FLY_VERSION}-linux-amd64.tgz && chmod +x fly && mv fly /usr/bin/fly
 
 RUN mkdir -p /root/.ssh && \
     chmod 0700 /root/.ssh
